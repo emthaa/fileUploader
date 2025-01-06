@@ -18,14 +18,39 @@
         <% } %>
     </header>
     <main>
+        <% if (folders && folders.length > 0) { %>
+            <h3>Your Folders</h3>
+            <ul>
+                <% folders.forEach(folder => { %>
+                    <li>
+                        <%= folder.name %>
+                        <form action="/folders/edit" method="post" style="display: inline;">
+                            <input type="hidden" name="folderId" value="<%= folder.id %>">
+                            <input type="text" name="newName" placeholder="New Folder Name" required>
+                            <button type="submit">Edit</button>
+                        </form>
+                        <form action="/folders/delete" method="post" style="display: inline;">
+                            <input type="hidden" name="folderId" value="<%= folder.id %>">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } %>
+        <form action="/folders" method="post">
+            <div class="form-group">
+                <label for="folderName">New Folder:</label>
+                <input type="text" id="folderName" name="name" required>
+                <button type="submit">Create Folder</button>
+            </div>
+        </form>
         <form action="/upload" method="post" enctype="multipart/form-data">
-            <label for="file">Choose a file to upload:</label>
-            <input type="file" id="file" name="file">
-            <button type="submit">Upload</button>
+            <div class="form-group">
+                <input type="file" class="form-control-file" name="uploaded_file">
+                <input type="submit" value="Submit">
+            </div>
         </form>
     </main>
-    <footer>
-        
-    </footer>
+    <footer></footer>
 </body>
 </html>

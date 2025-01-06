@@ -1,9 +1,15 @@
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+
 async function indexRouterGet(req, res, next) {
   try {
     if (req.isAuthenticated()) {
-      res.render("index", { user: req.user });
-    }else{
-      res.render("index", { user: null });
+      const folders = await prisma.folder.findMany({
+        where: { userId: req.user.id },
+      });
+      res.render("index", { user: req.user, folders });
+    } else {
+      res.redirect("/login");
     }
   } catch (error) {
     next(error);
