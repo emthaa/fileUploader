@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folder</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Folder: <%= folder.name %></h1>
+        <a href="/">Back to Home</a>
+        <a href="/logout">Logout</a>
+    </header>
+    <main>
+        <h3>Files</h3>
+        <% if (files && files.length > 0) { %>
+            <ul>
+                <% files.forEach(file => { %>
+                    <li>
+                        <%= file.originalName %> - <%= (file.size / 1024).toFixed(2) %> KB
+                        <a href="/files/<%= file.name %>" download>Download</a>
+                        <form action="/files/delete" method="post" style="display: inline;">
+                            <input type="hidden" name="fileId" value="<%= file.id %>">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No files in this folder.</p>
+        <% } %>
+        <form action="/folders/<%= folder.id %>/upload" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" class="form-control-file" name="uploaded_file">
+                <input type="submit" value="Upload File">
+            </div>
+        </form>
+    </main>
+    <footer></footer>
+</body>
+</html>

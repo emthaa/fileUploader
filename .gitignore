@@ -137,3 +137,5 @@ prisma/migrations/
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+uploads

@@ -1,9 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// filepath: /C:/Users/domin/Programming Projects/TheOdinProject/Express/fileUploader/prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,19 +12,33 @@ model Session {
   id        String   @id
   sid       String   @unique
   data      String   
-  expiresAt   DateTime
+  expiresAt DateTime
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  username  String @ unique
+  id       Int      @id @default(autoincrement())
+  username String   @unique
   password String
-  folders   Folder[]
+  folders  Folder[]
+  files    File[]
 }
 
 model Folder {
-  id     Int    @id @default(autoincrement())
-  name   String
-  userId Int
-  user   User   @relation(fields: [userId], references: [id])
+  id       Int      @id @default(autoincrement())
+  name     String
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id])
+  files    File[]
+}
+
+model File {
+  id         Int      @id @default(autoincrement())
+  name       String
+  originalName String   
+  folderId   Int
+  folder     Folder   @relation(fields: [folderId], references: [id])
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  uploadTime DateTime @default(now()) 
+  size         Int
 }

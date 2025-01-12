@@ -23,7 +23,7 @@
             <ul>
                 <% folders.forEach(folder => { %>
                     <li>
-                        <%= folder.name %>
+                        <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
                         <form action="/folders/edit" method="post" style="display: inline;">
                             <input type="hidden" name="folderId" value="<%= folder.id %>">
                             <input type="text" name="newName" placeholder="New Folder Name" required>
