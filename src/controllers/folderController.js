@@ -28,7 +28,10 @@ async function listFolders(req, res) {
     const folders = await prisma.folder.findMany({
       where: { userId },
     });
-    res.render("index", { user: req.user, folders });
+    const files = await prisma.file.findMany({
+      where: { folderId: null, userId },
+    });
+    res.render("index", { user: req.user, folders, files });
   } catch (error) {
     console.error("Error listing folders:", error);
     res.status(500).send("Internal Server Error");
@@ -137,6 +140,30 @@ async function uploadFile(req, res) {
   }
 }
 
+async function uploadRootFile(req, res) {
+  const userId = req.user.id;
+
+  if (!req.file) {
+    return res.status(400).send("No file uploaded.");
+  }
+
+  try {
+    await prisma.file.create({
+      data: {
+        name: req.file.filename,
+        originalName: req.file.originalname,
+        size: req.file.size,
+        folderId: null, // No folder
+        userId: userId,
+      },
+    });
+    res.redirect("/");
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
 async function deleteFile(req, res) {
   const fileId = parseInt(req.body.fileId, 10);
   const userId = req.user.id;
@@ -148,7 +175,7 @@ async function deleteFile(req, res) {
         userId: userId,
       },
     });
-    console.log(file)
+
     if (!file) {
       return res.status(404).send("File not found");
     }
@@ -178,5 +205,6 @@ module.exports = {
   deleteFolder,
   viewFolder,
   uploadFile,
-  deleteFile, 
+  uploadRootFile,
+  deleteFile,
 };

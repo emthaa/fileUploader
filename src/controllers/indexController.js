@@ -7,7 +7,10 @@ async function indexRouterGet(req, res, next) {
       const folders = await prisma.folder.findMany({
         where: { userId: req.user.id },
       });
-      res.render("index", { user: req.user, folders });
+      const files = await prisma.file.findMany({
+        where: { folderId: null, userId: req.user.id },
+      });
+      res.render("index", { user: req.user, folders, files });
     } else {
       res.redirect("/login");
     }

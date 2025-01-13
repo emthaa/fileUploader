@@ -37,17 +37,33 @@
                 <% }) %>
             </ul>
         <% } %>
+        <% if (files && files.length > 0) { %>
+            <ul>
+                <% files.forEach(file => { %>
+                    <li>
+                        <%= file.originalName %> - <%= (file.size / 1024).toFixed(2) %> KB
+                        <a href="/files/<%= file.name %>" download>Download</a>
+                        <form action="/files/delete" method="post" style="display: inline;">
+                            <input type="hidden" name="fileId" value="<%= file.id %>">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No files in the root directory.</p>
+        <% } %>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" class="form-control-file" name="uploaded_file">
+                <input type="submit" value="Upload File">
+            </div>
+        </form>
         <form action="/folders" method="post">
             <div class="form-group">
                 <label for="folderName">New Folder:</label>
                 <input type="text" id="folderName" name="name" required>
                 <button type="submit">Create Folder</button>
-            </div>
-        </form>
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <input type="file" class="form-control-file" name="uploaded_file">
-                <input type="submit" value="Submit">
             </div>
         </form>
     </main>

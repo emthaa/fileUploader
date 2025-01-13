@@ -43,5 +43,6 @@ folderRouter.get("/files/:filename", (req, res) => {
 
 folderRouter.post("/files/delete", folderController.deleteFile);
 
+folderRouter.post("/upload", upload.single("uploaded_file"), folderController.uploadRootFile);
 
 module.exports = folderRouter;
