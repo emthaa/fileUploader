@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 function signupRouterGet(req, res, next) {
   try {
     if (req.isAuthenticated()) {
-      res.render("index", { user: null });
+      res.redirect("/")
     } else {
       res.render("signup", { errors: null, data: null });
     }
