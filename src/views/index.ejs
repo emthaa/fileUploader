@@ -1,72 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Homepage</title>
-    <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
     <header>
-        <h1>File Uploader</h1>
-        <% if (user) { %>
-            <p>Welcome, <%= user.username %>!</p>
-            <a href="/logout">Logout</a>
-        <% } else { %>
-            <a href="/login">Login</a>
-            <a href="/signup">Sign Up</a>
-        <% } %>
+      <h1>File Uploader</h1>
+      <% if (user) { %>
+      <p>Welcome, <%= user.username %>!</p>
+      <a href="/logout">Logout</a>
+      <% } else { %>
+      <a href="/login">Login</a>
+      <a href="/signup">Sign Up</a>
+      <% } %>
     </header>
     <main>
-        <% if (folders && folders.length > 0) { %>
-            <h3>Your Folders</h3>
-            <ul>
-                <% folders.forEach(folder => { %>
-                    <li>
-                        <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
-                        <form action="/folders/edit" method="post" style="display: inline;">
-                            <input type="hidden" name="folderId" value="<%= folder.id %>">
-                            <input type="text" name="newName" placeholder="New Folder Name" required>
-                            <button type="submit">Edit</button>
-                        </form>
-                        <form action="/folders/delete" method="post" style="display: inline;">
-                            <input type="hidden" name="folderId" value="<%= folder.id %>">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </li>
-                <% }) %>
-            </ul>
-        <% } %>
-        <% if (files && files.length > 0) { %>
-            <ul>
-                <% files.forEach(file => { %>
-                    <li>
-                        <%= file.originalName %> - <%= (file.size / 1024).toFixed(2) %> KB
-                        <a href="/files/<%= file.name %>" download>Download</a>
-                        <form action="/files/delete" method="post" style="display: inline;">
-                            <input type="hidden" name="fileId" value="<%= file.id %>">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </li>
-                <% }) %>
-            </ul>
-        <% } else { %>
-            <p>No files in the root directory.</p>
-        <% } %>
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <input type="file" class="form-control-file" name="uploaded_file">
-                <input type="submit" value="Upload File">
-            </div>
-        </form>
-        <form action="/folders" method="post">
-            <div class="form-group">
-                <label for="folderName">New Folder:</label>
-                <input type="text" id="folderName" name="name" required>
-                <button type="submit">Create Folder</button>
-            </div>
-        </form>
+      <% if (folders && folders.length > 0) { %>
+      <h3>Your Folders</h3>
+      <ul>
+        <% folders.forEach(folder => { %>
+        <li>
+          <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
+          <form action="/folders/edit" method="post" style="display: inline">
+            <input type="hidden" name="folderId" value="<%= folder.id %>" />
+            <input
+              type="text"
+              name="newName"
+              placeholder="New Folder Name"
+              required
+            />
+            <button type="submit">Edit</button>
+          </form>
+          <form action="/folders/delete" method="post" style="display: inline">
+            <input type="hidden" name="folderId" value="<%= folder.id %>" />
+            <button type="submit">Delete</button>
+          </form>
+        </li>
+        <% }) %>
+      </ul>
+      <% } %> <% if (files && files.length > 0) { %>
+      <ul>
+        <% files.forEach(file => { %>
+        <li>
+          <%= file.originalName %> - <%= (file.size / 1024).toFixed(2) %> KB
+          <a href="/files/<%= file.name %>" download>Download</a>
+          <form action="/files/delete" method="post" style="display: inline">
+            <input type="hidden" name="fileId" value="<%= file.id %>" />
+            <button type="submit">Delete</button>
+          </form>
+        </li>
+        <% }) %>
+      </ul>
+      <% } else { %>
+      <p>No files in the root directory.</p>
+      <% } %>
+      <form action="/upload" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <input type="file" class="form-control-file" name="uploaded_file" />
+          <input type="submit" value="Upload File" />
+        </div>
+      </form>
+      <form action="/folders" method="post">
+        <div class="form-group">
+          <label for="folderName">New Folder:</label>
+          <input type="text" id="folderName" name="name" required />
+          <button type="submit">Create Folder</button>
+        </div>
+      </form>
     </main>
     <footer></footer>
-</body>
+  </body>
 </html>

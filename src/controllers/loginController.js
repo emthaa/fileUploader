@@ -19,7 +19,7 @@ function loginRouterPost(req, res, next) {
     if (!user) {
       return res.render("login", {
         errors: [{ msg: info.message }],
-        data: { username: req.body.username }
+        data: { username: req.body.username },
       });
     }
 

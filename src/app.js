@@ -10,7 +10,7 @@ const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const multer = require("multer");
 const prisma = new PrismaClient();
 const app = express();
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -89,8 +89,6 @@ app.use("/", require("./routes/indexRouter"));
 app.use("/", require("./routes/loginRouter"));
 app.use("/", require("./routes/signupRouter"));
 app.use("/", require("./routes/logoutRouter"));
-app.use("/", require("./routes/folderRouter")); 
-
-
+app.use("/", require("./routes/folderRouter"));
 
 app.listen(3000, () => console.log("app listening on port 3000"));

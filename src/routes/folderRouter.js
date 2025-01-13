@@ -3,7 +3,7 @@ const folderController = require("../controllers/folderController");
 const folderRouter = Router();
 const multer = require("multer");
 const path = require("path");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -43,6 +43,10 @@ folderRouter.get("/files/:filename", (req, res) => {
 
 folderRouter.post("/files/delete", folderController.deleteFile);
 
-folderRouter.post("/upload", upload.single("uploaded_file"), folderController.uploadRootFile);
+folderRouter.post(
+  "/upload",
+  upload.single("uploaded_file"),
+  folderController.uploadRootFile
+);
 
 module.exports = folderRouter;
