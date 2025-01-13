@@ -182,8 +182,9 @@ async function deleteFile(req, res) {
 
     // Delete the file from the filesystem
     const filePath = path.join(__dirname, "../../uploads", file.name);
-    fs.unlinkSync(filePath);
-
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
     // Delete the file from the database
     await prisma.file.delete({
       where: {
@@ -192,6 +193,41 @@ async function deleteFile(req, res) {
     });
 
     res.redirect(`/folders/${file.folderId}`);
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+async function deleteRootFile(req,res){
+  const fileId = parseInt(req.body.fileId, 10);
+  const userId = req.user.id;
+
+  try {
+    const file = await prisma.file.findUnique({
+      where: {
+        id: fileId,
+        userId: userId,
+      },
+    });
+
+    if (!file) {
+      return res.status(404).send("File not found");
+    }
+
+    // Delete the file from the filesystem
+    const filePath = path.join(__dirname, "../../uploads", file.name);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+    // Delete the file from the database
+    await prisma.file.delete({
+      where: {
+        id: fileId,
+      },
+    });
+
+    res.redirect('/');
   } catch (error) {
     console.error("Error deleting file:", error);
     res.status(500).send("Internal Server Error");
@@ -207,4 +243,5 @@ module.exports = {
   uploadFile,
   uploadRootFile,
   deleteFile,
+  deleteRootFile
 };

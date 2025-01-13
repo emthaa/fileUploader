@@ -41,7 +41,7 @@ folderRouter.get("/files/:filename", (req, res) => {
   });
 });
 
-folderRouter.post("/files/delete", folderController.deleteFile);
+folderRouter.post("/files/delete", folderController.deleteRootFile);
 
 folderRouter.post(
   "/upload",
