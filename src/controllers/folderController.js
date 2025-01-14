@@ -191,45 +191,38 @@ async function deleteFile(req, res) {
         id: fileId,
       },
     });
-
-    res.redirect(`/folders/${file.folderId}`);
+    if (file.folderId) {
+      res.redirect(`/folders/${file.folderId}`);
+    } else {
+      res.redirect("/"); // for root files
+    }
   } catch (error) {
     console.error("Error deleting file:", error);
     res.status(500).send("Internal Server Error");
   }
 }
 
-async function deleteRootFile(req,res){
-  const fileId = parseInt(req.body.fileId, 10);
-  const userId = req.user.id;
+async function downloadFile(req, res) {
+  const filename = req.params.filename;
 
   try {
-    const file = await prisma.file.findUnique({
-      where: {
-        id: fileId,
-        userId: userId,
-      },
+    const file = await prisma.file.findFirst({
+      where: { name: filename, userId: req.user.id },
     });
-
+    console.log(filename, req.user.id);
     if (!file) {
       return res.status(404).send("File not found");
     }
 
-    // Delete the file from the filesystem
-    const filePath = path.join(__dirname, "../../uploads", file.name);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
-    // Delete the file from the database
-    await prisma.file.delete({
-      where: {
-        id: fileId,
-      },
+    const filePath = path.join(__dirname, "../../uploads", filename);
+    res.download(filePath, file.originalName, (err) => {
+      if (err) {
+        console.error("Error downloading file:", err);
+        res.status(500).send("Internal Server Error");
+      }
     });
-
-    res.redirect('/');
   } catch (error) {
-    console.error("Error deleting file:", error);
+    console.error("Error fetching file details:", error);
     res.status(500).send("Internal Server Error");
   }
 }
@@ -243,5 +236,5 @@ module.exports = {
   uploadFile,
   uploadRootFile,
   deleteFile,
-  deleteRootFile
+  downloadFile,
 };
