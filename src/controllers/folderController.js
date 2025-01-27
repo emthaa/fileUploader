@@ -120,7 +120,7 @@ async function uploadFile(req, res) {
   const userId = req.user.id;
 
   if (!req.file) {
-    return res.status(400).send("No file uploaded.");
+    return res.status(204).send();
   }
 
   try {
@@ -144,7 +144,7 @@ async function uploadRootFile(req, res) {
   const userId = req.user.id;
 
   if (!req.file) {
-    return res.status(400).send("No file uploaded.");
+    return res.status(204).send();
   }
 
   try {

@@ -1,0 +1,266 @@
+:root {
+  --black: #0c0910;
+  --dark-purple: #453750;
+  --soft-purple: #73648a;
+  --light-purple: #a393bf;
+  --dark-pink: #9882ac;
+  --white: #f9efff;
+  --dark-white: #cdc6da;
+}
+
+html,
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-color: var(--white);
+  color: var(--black);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  background-color: var(--dark-purple);
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 200px;
+  margin-right: 25px;
+}
+
+.header-link {
+  text-decoration: none;
+  color: var(--white);
+}
+
+main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-title,
+.sub-header-title {
+  margin-left: 25px;
+  color: var(--white);
+}
+
+.sub-header-title {
+  color: var(--black);
+}
+
+.sub-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 25px;
+}
+
+.sub-header-right {
+  width: 200px;
+  margin-right: 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-top: 25px;
+}
+
+.sub-header-button {
+  background-color: var(--dark-purple);
+  color: var(--white);
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.sub-header-button:hover {
+  background-color: var(--soft-purple);
+}
+
+.form-control-file {
+  display: none;
+}
+
+.custom-file-label {
+  background-color: var(--dark-purple);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+}
+
+.custom-file-label:hover {
+  background-color: var(--soft-purple);
+}
+
+.edit-menu {
+  display: none; /* Hidden by default */
+  position: absolute;
+  background-color: var(--dark-purple);
+  color: var(--white);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.edit-menu input {
+  margin-bottom: 10px;
+}
+
+.edit-menu button {
+  background-color: var(--soft-purple);
+  color: var(--white);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-menu button:hover {
+  background-color: var(--light-purple);
+}
+
+.files-folders-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 25px;
+  flex-direction: column;
+  align-content: center;
+}
+
+.file,
+.folder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  padding: 10px;
+  background-color: var(--dark-purple);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.file:hover,
+.folder:hover {
+  background-color: var(--soft-purple);
+}
+
+.file-folder-button {
+  background-color: var(--dark-purple);
+  color: var(--white);
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100px;
+}
+
+.file-folder-button:hover {
+  background-color: var(--soft-purple);
+}
+
+.file-folder-left {
+  flex-grow: 1;
+  margin-right: 20px;
+  width: 500px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.td-size {
+  text-align: center;
+}
+
+.row-icons {
+  width: 30px;
+  height: 30px;
+}
+
+.username {
+  color: var(--white);
+}
+
+.file-folder-actions {
+  margin-bottom: 25px;
+  margin-top: -25px;
+}
+
+.folder-name,
+.file-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 50px;
+}
+
+.files-folders-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+
+th {
+  background-color: var(--dark-purple);
+  color: var(--white);
+  height: 45px;
+}
+
+.file-folder:hover {
+  background-color: var(--dark-white);
+}
+
+.signup-header,
+.login-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--white);
+}
+
+.signup-actions,
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.action-button {
+  background-color: var(--dark-purple);
+  color: var(--white);
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100px;
+}
+
+.action-button:hover {
+  background-color: var(--soft-purple);
+}
+
+th.actions-column,
+td.actions-column {
+  width: 300px; /* Adjust to your desired width */
+  text-align: center; /* Optional: center align content */
+}

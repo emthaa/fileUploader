@@ -4,11 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <main>
+    <header class="signup-header">
       <h2>Sign Up</h2>
+    </header>
+    <main>
       <form action="/signup" method="POST">
         <div class="form-group">
           <label for="username">Username:</label>
@@ -42,7 +44,10 @@
           </ul>
         </div>
         <% } %>
-        <button type="submit">Sign Up</button>
+        <div class="signup-actions">
+          <button class="action-button" type="submit">Sign Up</button>
+        </div>
+        <p>Have an account? <a href="/login">Login</a></p>
       </form>
     </main>
   </body>

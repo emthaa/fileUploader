@@ -3,73 +3,179 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Homepage</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <title>File Uploader</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script>
+      function updateFileName(input) {
+        const fileNameDisplay = document.getElementById("fileNameDisplay");
+        const fileName = input.files[0]?.name || "No file chosen";
+        fileNameDisplay.textContent = fileName;
+      }
+
+      function toggleEditMenu(event, folderId) {
+        event.stopPropagation();
+        const editMenu = document.getElementById(`edit-menu-${folderId}`);
+        editMenu.style.display =
+          editMenu.style.display === "block" ? "none" : "block";
+      }
+
+      function navigateTo(url) {
+        window.location.href = url;
+      }
+
+      function downloadFile(filename) {
+        window.location.href = `/files/${filename}`;
+      }
+    </script>
   </head>
   <body>
     <header>
-      <h1>File Uploader</h1>
-      <% if (user) { %>
-      <p>Welcome, <%= user.username %>!</p>
-      <a href="/logout">Logout</a>
-      <% } else { %>
-      <a href="/login">Login</a>
-      <a href="/signup">Sign Up</a>
-      <% } %>
+      <h1 class="header-title">File Uploader</h1>
+      <div class="header-right">
+        <% if (user) { %>
+        <p class="username"><%= user.username %></p>
+        <a class="header-link" href="/">Home</a>
+        <a class="header-link" href="/logout">Logout</a>
+        <% } else { %>
+        <a class="header-link" href="/login">Login</a>
+        <a class="header-link" href="/signup">Sign Up</a>
+        <% } %>
+      </div>
     </header>
     <main>
-      <% if (folders && folders.length > 0) { %>
-      <h3>Your Folders</h3>
-      <ul>
-        <% folders.forEach(folder => { %>
-        <li>
-          <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
-          <form action="/folders/edit" method="post" style="display: inline">
-            <input type="hidden" name="folderId" value="<%= folder.id %>" />
+      <h2>Files</h2>
+      <div class="file-folder-actions">
+        <!-- File Upload Form -->
+        <form action="/upload" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="fileInput" class="custom-file-label">Choose File</label>
             <input
-              type="text"
-              name="newName"
-              placeholder="New Folder Name"
-              required
+              type="file"
+              class="form-control-file"
+              id="fileInput"
+              name="uploaded_file"
+              onchange="updateFileName(this)"
             />
-            <button type="submit">Edit</button>
-          </form>
-          <form action="/folders/delete" method="post" style="display: inline">
-            <input type="hidden" name="folderId" value="<%= folder.id %>" />
-            <button type="submit">Delete</button>
-          </form>
-        </li>
-        <% }) %>
-      </ul>
-      <% } %> <% if (files && files.length > 0) { %>
-      <ul>
-        <% files.forEach(file => { %>
-        <li>
-          <%= file.originalName %> - <%= (file.size / 1024).toFixed(2) %> KB
-          <a href="/files/<%= file.name %>" download>Download</a>
-          <form action="/files/delete" method="post" style="display: inline">
-            <input type="hidden" name="fileId" value="<%= file.id %>" />
-            <button type="submit">Delete</button>
-          </form>
-        </li>
-        <% }) %>
-      </ul>
-      <% } else { %>
-      <p>No files in the root directory.</p>
-      <% } %>
-      <form action="/upload" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-          <input type="file" class="form-control-file" name="uploaded_file" />
-          <input type="submit" value="Upload File" />
-        </div>
-      </form>
-      <form action="/folders" method="post">
-        <div class="form-group">
-          <label for="folderName">New Folder:</label>
-          <input type="text" id="folderName" name="name" required />
-          <button type="submit">Create Folder</button>
-        </div>
-      </form>
+            <p id="fileNameDisplay">No file chosen</p>
+            <input
+              class="sub-header-button"
+              type="submit"
+              value="Upload File"
+            />
+          </div>
+        </form>
+
+        <!-- New Folder Form -->
+        <form action="/folders" method="post">
+          <div class="form-group">
+            <label for="folderName">New Folder:</label>
+            <input type="text" id="folderName" name="name" required />
+            <button class="sub-header-button" type="submit">
+              Create Folder
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Files and Folders Table -->
+      <table class="files-folders-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th class="actions-column">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (folders && folders.length > 0) { %> <%
+          folders.forEach(function(folder) { %>
+          <tr
+            class="file-folder"
+            onclick="navigateTo('/folders/<%= folder.id %>')"
+            style="cursor: pointer"
+          >
+            <td class="folder-name">
+              <img class="row-icons" src="/folder.svg" alt="Folder Icon" />
+              <%= folder.name %>
+            </td>
+            <td class="td-size">-</td>
+            <td class="actions-column">
+              <button
+                class="file-folder-button"
+                type="button"
+                onclick="toggleEditMenu(event, <%= folder.id %>)"
+              >
+                Edit
+              </button>
+              <div
+                id="edit-menu-<%= folder.id %>"
+                class="edit-menu"
+                style="display: none"
+              >
+                <form action="/folders/edit" method="post">
+                  <input
+                    type="hidden"
+                    name="folderId"
+                    value="<%= folder.id %>"
+                  />
+                  <input
+                    type="text"
+                    name="newName"
+                    placeholder="New Folder Name"
+                    required
+                  />
+                  <button type="submit">Save</button>
+                  <button
+                    type="button"
+                    onclick="toggleEditMenu(event, <%= folder.id %>)"
+                  >
+                    Cancel
+                  </button>
+                </form>
+              </div>
+              <form
+                action="/folders/delete"
+                method="post"
+                style="display: inline"
+              >
+                <input type="hidden" name="folderId" value="<%= folder.id %>" />
+                <button class="file-folder-button" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }); %> <% } %> <% if (files && files.length > 0) { %> <%
+          files.forEach(function(file) { %>
+          <tr
+            class="file-folder"
+            onclick="navigateTo('/files/<%= file.name %>')"
+            style="cursor: pointer"
+          >
+            <td class="file-name">
+              <img class="row-icons" src="/file.svg" alt="File Icon" />
+              <%= file.originalName %>
+            </td>
+            <td class="td-size">(<%= (file.size / 1024).toFixed(2) %> KB)</td>
+            <td class="actions-column">
+              <button
+                class="file-folder-button"
+                type="button"
+                onclick="downloadFile('<%= file.name %>')"
+              >
+                Download
+              </button>
+              <form
+                action="/files/delete"
+                method="post"
+                style="display: inline"
+              >
+                <input type="hidden" name="fileId" value="<%= file.id %>" />
+                <button class="file-folder-button" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }); %> <% } %>
+        </tbody>
+      </table>
     </main>
     <footer></footer>
   </body>

@@ -41,7 +41,7 @@ async function signupRouterPost(req, res, next) {
       throw new Error("Failed to insert user");
     }
 
-    res.render("index", { user: null });
+    res.redirect("/login");
   } catch (error) {
     console.error("Error:", error);
     res
