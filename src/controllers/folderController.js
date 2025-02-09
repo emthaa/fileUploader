@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const supabase = require("../database/supabaseClient");
 const fs = require("fs");
 const path = require("path");
 
@@ -124,6 +125,21 @@ async function uploadFile(req, res) {
   }
 
   try {
+    const filePath = path.join(__dirname, "../../uploads", req.file.filename);
+    const fileStream = fs.createReadStream(filePath);
+
+    const { data, error } = await supabase.storage
+      .from("uploads")
+      .upload(`public/${req.file.filename}`, fileStream, {
+        cacheControl: "3600",
+        upsert: false,
+        duplex: "half",
+      });
+
+    if (error) {
+      throw error;
+    }
+
     await prisma.file.create({
       data: {
         name: req.file.filename, // Store the unique file name
@@ -131,8 +147,12 @@ async function uploadFile(req, res) {
         size: req.file.size, // Store the file size
         folderId: folderId,
         userId: userId,
+        url: data.Key, // Store the URL of the uploaded file
       },
     });
+    if (fs.existsSync(filePath)) { //Deletes file from local storage
+      fs.unlinkSync(filePath);
+    }
     res.redirect(`/folders/${folderId}`);
   } catch (error) {
     console.error("Error uploading file:", error);
@@ -148,15 +168,32 @@ async function uploadRootFile(req, res) {
   }
 
   try {
+    const filePath = path.join(__dirname, "../../uploads", req.file.filename);
+    const { data, error } = await supabase.storage
+      .from("uploads")
+      .upload(`public/${req.file.filename}`, fs.createReadStream(filePath), {
+        cacheControl: "3600",
+        upsert: false,
+        duplex: "half",
+      });
+
+    if (error) {
+      throw error;
+    }
+
     await prisma.file.create({
       data: {
         name: req.file.filename,
         originalName: req.file.originalname,
         size: req.file.size,
-        folderId: null, // No folder
+        folderId: null, //No folder
         userId: userId,
+        url: data.Key, // Store the URL of the uploaded file
       },
     });
+    if (fs.existsSync(filePath)) { //Deletes file from local storage
+      fs.unlinkSync(filePath);
+    }
     res.redirect("/");
   } catch (error) {
     console.error("Error uploading file:", error);
@@ -185,12 +222,25 @@ async function deleteFile(req, res) {
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
-    // Delete the file from the database
+
+    const { data, error } = await supabase.storage //Remove file from Supabase storage
+      .from("uploads")
+      .remove([`public/${file.name}`]);
+
+    if (error) {
+      console.error("Error removing file from Supabase storage:", error);
+      return res.status(500).send("Internal Server Error");
+    }
+
+    console.log("File removed from Supabase storage:", data);
+
     await prisma.file.delete({
+      // Delete the file record from the database
       where: {
         id: fileId,
       },
     });
+
     if (file.folderId) {
       res.redirect(`/folders/${file.folderId}`);
     } else {
@@ -209,18 +259,28 @@ async function downloadFile(req, res) {
     const file = await prisma.file.findFirst({
       where: { name: filename, userId: req.user.id },
     });
-    console.log(filename, req.user.id);
+
     if (!file) {
       return res.status(404).send("File not found");
     }
 
-    const filePath = path.join(__dirname, "../../uploads", filename);
-    res.download(filePath, file.originalName, (err) => {
-      if (err) {
-        console.error("Error downloading file:", err);
-        res.status(500).send("Internal Server Error");
-      }
-    });
+    const { data, error } = await supabase.storage
+      .from("uploads")
+      .download(`public/${filename}`);
+
+    if (error) {
+      throw error;
+    }
+
+    const buffer = await data.arrayBuffer(); //convert file
+    const fileBuffer = Buffer.from(buffer);
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${file.originalName}"`
+    );
+    res.setHeader("Content-Type", data.type);
+    res.send(fileBuffer);
   } catch (error) {
     console.error("Error fetching file details:", error);
     res.status(500).send("Internal Server Error");

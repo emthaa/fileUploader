@@ -12,20 +12,6 @@ const prisma = new PrismaClient();
 const app = express();
 const { v4: uuidv4 } = require("uuid");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = `${uuidv4()}-${Date.now()}`;
-    const originalName = file.originalname;
-    const extension = path.extname(originalName);
-    const baseName = path.basename(originalName, extension);
-    cb(null, `${baseName}-${uniqueSuffix}${extension}`);
-  },
-});
-
-const upload = multer({ storage: storage });
 app.use(
   session({
     cookie: {
